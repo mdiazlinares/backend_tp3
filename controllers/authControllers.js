@@ -79,6 +79,8 @@ const loginUsuario = async (req, res) => {
 			expiresIn: '3h',
 		});
 
+		// console.log(payload, token);
+
 		res.status(200).json({
 			msg: 'Usuario logueado',
 			token,

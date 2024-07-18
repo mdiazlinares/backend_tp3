@@ -1,12 +1,18 @@
 const productoModel = require('../model/producto-model');
 const usuarioModel = require('../model/usuario-model');
+const canchaModel = require('../model/cancha-model');
+const jwt = require('jsonwebtoken');
 
 const crearProducto = async (req, res) => {
 	try {
 		const { name, precio, descripcion } = req.body;
 
 		//validaciones
-		//...
+		if (name === '' || precio === '' || descripcion === '') {
+			res.status(400).json({
+				msg: 'Todos los campos son obligatorios',
+			});
+		}
 		//fin de las validaciones
 
 		//opcional verificar si el producto existe o no y ver como lo encaran
@@ -45,7 +51,11 @@ const listaProductos = async (req, res) => {
 const editarProducto = async (req, res) => {
 	try {
 		//validaciones
-		//...
+		// if (name === '' || precio === '' || descripcion === '') {
+		// 	res.status(400).json({
+		// 		msg: 'Todos los campos son obligatorios',
+		// 	});
+		// }
 		//fin de las validaciones
 
 		//buscamos que el producto que quiera editar exista
@@ -62,7 +72,7 @@ const editarProducto = async (req, res) => {
 		await productoModel.findByIdAndUpdate(req.body._id, req.body);
 
 		res.status(200).json({
-			msg: 'producto Editado exitosamente',
+			msg: 'Producto editado exitosamente',
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -99,11 +109,137 @@ const eliminarProducto = async (req, res) => {
 const listaUsuarios = async (req, res) => {
 	try {
 		const listaUsuarios = await usuarioModel.find();
+		if (!listaUsuarios) {
+			return res.status(400).json({
+				mensaje: 'No existen usuarios cargados para listar',
+			});
+		}
+		// const payload = {mensaje:"payload",
+		// };
+
+		// const token = jwt.sign(payload, process.env.SECRET_JWT, {
+		// 	expiresIn: '3h',
+		// });
 
 		res.status(200).json({
 			msg: 'lista de usuarios enviadas',
 			//le envio al front toda la lista de usuarios
 			listaUsuarios,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+
+
+const editarUsuario = async (req, res) => {
+	try {
+		// const { name, edad, email, password, estado } = req.body;
+		// validaciones
+		// if (name === '' || edad === '' || email === ''|| password === '') {
+		// 	res.status(400).json({
+		// 		msg: 'Todos los campos son obligatorios',
+		// 	});
+		// }
+		// fin de las validaciones
+
+		//buscamos que el producto que quiera editar exista
+		const usuarioEditar = await usuarioModel.findById(req.body._id);
+
+		//en caso de no existir tiramos un error
+		if (!usuarioEditar) {
+			return res.status(400).json({
+				msg: 'No existe un usuario con este ID',
+			});
+		}
+
+		//si el producto que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
+		await usuarioModel.findByIdAndUpdate(req.body._id, req.body);
+
+		res.status(200).json({
+			msg: 'Usuario editado exitosamente',
+		});
+	} catch (error) {
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+///////////////////////////
+
+const crearCancha = async (req, res) => {
+	try {
+		// const { name, descripcion, estado } = req.body;
+
+		//validaciones
+		// if (name === '' || descripcion === '' || estado === '') {
+		// 	res.status(400).json({
+		// 		msg: 'Todos los campos son obligatorios',
+		// 	});
+		// }
+		//fin de las validaciones
+
+		//opcional verificar si el producto existe o no y ver como lo encaran
+		const cancha = new canchaModel(req.body);
+
+		//guardarlo en la base de datos
+		await cancha.save();
+
+		res.status(201).json({
+			msg: 'Cancha creada',
+		});
+	} catch (error) {
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+
+const listaCanchas = async (req, res) => {
+	try {
+		//Si al metodo find no le asignamos ningun argumento, me retornara el arreglo con todos los elementos del modelo
+		const listaCanchas = await canchaModel.find();
+
+		res.status(200).json({
+			msg: 'lista de canchas enviadas',
+			//le envio al front toda la lista de productos
+			listaCanchas,
+		});
+	} catch (error) {
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+
+const editarCancha = async (req, res) => {
+	try {
+		//validaciones
+		// if (name === '' || descripcion === '' || estado === '') {
+		// 	res.status(400).json({
+		// 		msg: 'Todos los campos son obligatorios',
+		// 	});
+		// }
+		//fin de las validaciones
+
+		//buscamos que el producto que quiera editar exista
+		const canchaEditar = await canchaModel.findById(req.body._id);
+
+		//en caso de no existir tiramos un error
+		if (!canchaEditar) {
+			return res.status(400).json({
+				msg: 'No existe una cancha con este ID',
+			});
+		}
+
+		//si el producto que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
+		await canchaModel.findByIdAndUpdate(req.body._id, req.body);
+
+		res.status(200).json({
+			msg: 'Cancha editada exitosamente',
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -118,4 +254,8 @@ module.exports = {
 	editarProducto,
 	eliminarProducto,
 	listaUsuarios,
+	editarUsuario,
+	crearCancha,
+	listaCanchas,
+	editarCancha,
 };

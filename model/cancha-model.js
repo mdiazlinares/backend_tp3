@@ -1,13 +1,8 @@
 const { Schema, model } = require('mongoose');
 
-const ProductoSchema = Schema({
+const CanchaSchema = Schema({
 	name: {
 		type: String,
-		required: true,
-	},
-
-	precio: {
-		type: Number,
 		required: true,
 	},
 
@@ -16,16 +11,11 @@ const ProductoSchema = Schema({
 		required: true,
 	},
 
-	stock: {
-		type: Number,
-		required: true,
-	},	
-
 	estado: {
 		type: Boolean,
 		required: true,
 		default: true,
-	},		
+	},	
 });
 
-module.exports = model('Productos', ProductoSchema);
+module.exports = model('Canchas', CanchaSchema);
