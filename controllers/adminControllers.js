@@ -1,7 +1,7 @@
 const productoModel = require('../model/producto-model');
 const usuarioModel = require('../model/usuario-model');
 const canchaModel = require('../model/cancha-model');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 const crearProducto = async (req, res) => {
 	try {
@@ -226,6 +226,9 @@ const crearCancha = async (req, res) => {
 
 const listaCanchas = async (req, res) => {
 	try {
+		// const token = jwt.sign(payload, process.env.SECRET_JWT, {expiresIn: '1h',});
+		// console.log(token);
+
 		//Si al metodo find no le asignamos ningun argumento, me retornara el arreglo con todos los elementos del modelo
 		const listaCanchas = await canchaModel.find();
 
