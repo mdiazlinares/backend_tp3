@@ -29,7 +29,7 @@ const crearUsuario = async (req, res) => {
 		const salt = bcrypt.genSaltSync(10);
 		usuario.password = bcrypt.hashSync(password, salt);
 
-		// //guardarlo en la base de datos
+		//guardarlo en la base de datos
 		await usuario.save();
 
 		res.status(201).json({
@@ -75,18 +75,13 @@ const loginUsuario = async (req, res) => {
 			rol: usuario.rol,
 		};
 
-		const token = jwt.sign(payload, process.env.SECRET_JWT, {
-			expiresIn: '3h',
-		});
-
-		// console.log(payload, token);
+		const token = jwt.sign(payload, process.env.SECRET_JWT, {expiresIn: '24h',});
 
 		res.status(200).json({
 			msg: 'Usuario logueado',
 			token,
 		});
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({
 			msg: 'Por favor contactarse con un administrador',
 		});

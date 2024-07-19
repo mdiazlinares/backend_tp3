@@ -15,26 +15,26 @@ const {
 const { validarJWT } = require('../middleware/validarJWT');
 const routerAdmin = express.Router();
 
-routerAdmin.post('/crearProducto', crearProducto);  /*FALTA AGREGAR validarJWT*/
+routerAdmin.post('/crearProducto', validarJWT, crearProducto);  
 
-routerAdmin.get('/productos', listaProductos);  /*FALTA AGREGAR validarJWT*/
+routerAdmin.get('/productos', validarJWT, listaProductos);
 
-routerAdmin.put('/editarProducto', editarProducto);  /*FALTA AGREGAR validarJWT*/
+routerAdmin.put('/editarProducto', validarJWT, editarProducto); 
 
-routerAdmin.delete('/eliminarProducto/:id', eliminarProducto);	 /*FALTA AGREGAR validarJWT*/
+routerAdmin.delete('/eliminarProducto/:id', validarJWT, eliminarProducto);	
 
-routerAdmin.get('/usuarios', listaUsuarios); /*FALTA AGREGAR validarJWT*/
+routerAdmin.get('/usuarios', validarJWT, listaUsuarios); 
 
-routerAdmin.put('/editarUsuario', editarUsuario); /*FALTA AGREGAR validarJWT*/
+routerAdmin.put('/editarUsuario', validarJWT, editarUsuario); 
 
-routerAdmin.delete('/eliminarUsuario/:id', eliminarUsuario); /*FALTA AGREGAR validarJWT*/
+routerAdmin.delete('/eliminarUsuario/:id', validarJWT, eliminarUsuario);
 
-routerAdmin.post('/crearCancha', crearCancha); /*FALTA AGREGAR validarJWT*/
+routerAdmin.post('/crearCancha', validarJWT, crearCancha);
 
-routerAdmin.get('/canchas', listaCanchas); /*FALTA AGREGAR validarJWT*/
+routerAdmin.get('/canchas', validarJWT, listaCanchas);
 
-routerAdmin.put('/editarCancha', editarCancha);
+routerAdmin.put('/editarCancha', validarJWT, editarCancha);
 
-routerAdmin.delete('/eliminarCancha/:id', eliminarCancha); /*FALTA AGREGAR validarJWT*/
+routerAdmin.delete('/eliminarCancha/:id', validarJWT, eliminarCancha); 
 
 module.exports = routerAdmin;
