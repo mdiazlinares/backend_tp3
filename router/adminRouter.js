@@ -10,6 +10,7 @@ const {
 	crearCancha,
 	listaCanchas,
 	editarCancha,
+	eliminarCancha,
 } = require('../controllers/adminControllers');
 const { validarJWT } = require('../middleware/validarJWT');
 const routerAdmin = express.Router();
@@ -33,5 +34,7 @@ routerAdmin.post('/crearCancha', crearCancha); /*FALTA AGREGAR validarJWT*/
 routerAdmin.get('/canchas', listaCanchas); /*FALTA AGREGAR validarJWT*/
 
 routerAdmin.put('/editarCancha', editarCancha);
+
+routerAdmin.delete('/eliminarCancha/:id', eliminarCancha); /*FALTA AGREGAR validarJWT*/
 
 module.exports = routerAdmin;
