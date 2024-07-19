@@ -6,6 +6,7 @@ const {
 	eliminarProducto,
 	listaUsuarios,
 	editarUsuario,
+	eliminarUsuario,
 	crearCancha,
 	listaCanchas,
 	editarCancha,
@@ -19,11 +20,13 @@ routerAdmin.get('/productos', listaProductos);  /*FALTA AGREGAR validarJWT*/
 
 routerAdmin.put('/editarProducto', editarProducto);  /*FALTA AGREGAR validarJWT*/
 
-routerAdmin.delete('/eliminar/:id', validarJWT, eliminarProducto);
+routerAdmin.delete('/eliminarProducto/:id', eliminarProducto);	 /*FALTA AGREGAR validarJWT*/
 
 routerAdmin.get('/usuarios', listaUsuarios); /*FALTA AGREGAR validarJWT*/
 
 routerAdmin.put('/editarUsuario', editarUsuario); /*FALTA AGREGAR validarJWT*/
+
+routerAdmin.delete('/eliminarUsuario/:id', eliminarUsuario); /*FALTA AGREGAR validarJWT*/
 
 routerAdmin.post('/crearCancha', crearCancha); /*FALTA AGREGAR validarJWT*/
 

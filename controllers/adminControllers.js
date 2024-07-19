@@ -83,7 +83,7 @@ const editarProducto = async (req, res) => {
 
 const eliminarProducto = async (req, res) => {
 	try {
-		//recibimos por PARAMETRO el id del producto que queremos editar y lo comparamos con todos los id de la base de datos del modelo producto
+		//recibimos por PARAMETRO el id del producto que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const productoEliminar = await productoModel.findById(req.params.id);
 
 		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
@@ -97,7 +97,7 @@ const eliminarProducto = async (req, res) => {
 		await productoModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
-			msg: 'productoEliminado',
+			msg: 'Producto eliminado',
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -122,12 +122,11 @@ const listaUsuarios = async (req, res) => {
 		// });
 
 		res.status(200).json({
-			msg: 'lista de usuarios enviadas',
+			msg: 'Lista de usuarios enviadas',
 			//le envio al front toda la lista de usuarios
 			listaUsuarios,
 		});
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({
 			msg: 'Error, por favor contactarse con un administrador',
 		});
@@ -146,7 +145,7 @@ const editarUsuario = async (req, res) => {
 		// }
 		// fin de las validaciones
 
-		//buscamos que el producto que quiera editar exista
+		//buscamos que el usuario que quiera editar exista
 		const usuarioEditar = await usuarioModel.findById(req.body._id);
 
 		//en caso de no existir tiramos un error
@@ -156,7 +155,7 @@ const editarUsuario = async (req, res) => {
 			});
 		}
 
-		//si el producto que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
+		//si el usuario que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
 		await usuarioModel.findByIdAndUpdate(req.body._id, req.body);
 
 		res.status(200).json({
@@ -168,6 +167,33 @@ const editarUsuario = async (req, res) => {
 		});
 	}
 };
+
+
+const eliminarUsuario = async (req, res) => {
+	try {
+		//recibimos por PARAMETRO el id del usuario que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
+		const usuarioEliminar = await usuarioModel.findById(req.params.id);
+
+		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
+		if (!usuarioEliminar) {
+			return res.status(400).json({
+				msg: 'No existe ningun usuario con este ID',
+			});
+		}
+
+		//en caso que el usuario que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
+		await usuarioModel.findByIdAndDelete(req.params.id);
+
+		res.status(200).json({
+			msg: 'Usuario eliminado',
+		});
+	} catch (error) {
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+	
 ///////////////////////////
 
 const crearCancha = async (req, res) => {
@@ -182,7 +208,7 @@ const crearCancha = async (req, res) => {
 		// }
 		//fin de las validaciones
 
-		//opcional verificar si el producto existe o no y ver como lo encaran
+		//opcional verificar si la cancha existe o no y ver como lo encaran
 		const cancha = new canchaModel(req.body);
 
 		//guardarlo en la base de datos
@@ -204,7 +230,7 @@ const listaCanchas = async (req, res) => {
 		const listaCanchas = await canchaModel.find();
 
 		res.status(200).json({
-			msg: 'lista de canchas enviadas',
+			msg: 'Lista de canchas enviadas',
 			//le envio al front toda la lista de productos
 			listaCanchas,
 		});
@@ -225,7 +251,7 @@ const editarCancha = async (req, res) => {
 		// }
 		//fin de las validaciones
 
-		//buscamos que el producto que quiera editar exista
+		//buscamos que la cancha que quiera editar exista
 		const canchaEditar = await canchaModel.findById(req.body._id);
 
 		//en caso de no existir tiramos un error
@@ -235,7 +261,7 @@ const editarCancha = async (req, res) => {
 			});
 		}
 
-		//si el producto que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
+		//si la cancha que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
 		await canchaModel.findByIdAndUpdate(req.body._id, req.body);
 
 		res.status(200).json({
@@ -255,6 +281,7 @@ module.exports = {
 	eliminarProducto,
 	listaUsuarios,
 	editarUsuario,
+	eliminarUsuario,
 	crearCancha,
 	listaCanchas,
 	editarCancha,
