@@ -274,6 +274,32 @@ const editarCancha = async (req, res) => {
 	}
 };
 
+
+const eliminarCancha = async (req, res) => {
+	try {
+		//recibimos por PARAMETRO el id de la cancha que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
+		const canchaEliminar = await canchaModel.findById(req.params.id);
+
+		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
+		if (!canchaEliminar) {
+			return res.status(400).json({
+				msg: 'No existe ninguna cancha con este ID',
+			});
+		}
+
+		//en caso que la cancha que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
+		await canchaModel.findByIdAndDelete(req.params.id);
+
+		res.status(200).json({
+			msg: 'Cancha eliminada',
+		});
+	} catch (error) {
+		res.status(500).json({
+			msg: 'Error, por favor contactarse con un administrador',
+		});
+	}
+};
+
 module.exports = {
 	crearProducto,
 	listaProductos,
@@ -285,4 +311,5 @@ module.exports = {
 	crearCancha,
 	listaCanchas,
 	editarCancha,
+	eliminarCancha,
 };
