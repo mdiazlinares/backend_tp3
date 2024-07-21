@@ -187,15 +187,6 @@ const eliminarReserva = async (req, res) => {
 
 const editarReserva = async (req, res) => {
 	try {
-		// const { name, edad, email, password, estado } = req.body;
-		// validaciones
-		// if (name === '' || edad === '' || email === ''|| password === '') {
-		// 	res.status(400).json({
-		// 		msg: 'Todos los campos son obligatorios',
-		// 	});
-		// }
-		// fin de las validaciones
-
 		//buscamos que el usuario que quiera editar exista
 		const reservaEditar = await reservaModel.findById(req.body._id);
 

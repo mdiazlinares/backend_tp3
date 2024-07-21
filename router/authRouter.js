@@ -16,3 +16,4 @@ routerAuth.delete('/eliminarReserva/:id', validarJWT, eliminarReserva);
 routerAuth.put('/editarReserva/', validarJWT, editarReserva);
 
 module.exports = routerAuth;
+
