@@ -314,5 +314,5 @@ module.exports = {
 	crearCancha,
 	listaCanchas,
 	editarCancha,
-	eliminarCancha,
+	eliminarCancha
 };
