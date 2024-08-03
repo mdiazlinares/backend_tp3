@@ -1,7 +1,6 @@
 const productoModel = require('../model/producto-model');
 const usuarioModel = require('../model/usuario-model');
 const canchaModel = require('../model/cancha-model');
-// const jwt = require('jsonwebtoken');
 
 const crearProducto = async (req, res) => {
 	try {
@@ -13,9 +12,16 @@ const crearProducto = async (req, res) => {
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
+
+		const productoExistente = await productoModel.findOne({ name });
+        if (productoExistente) {
+            return res.status(400).json({ msg: 'El producto ya existe' });
+        }		
 		//fin de las validaciones
 
 		//opcional verificar si el producto existe o no y ver como lo encaran
+
+
 		const producto = new productoModel(req.body);
 
 		//guardarlo en la base de datos
@@ -33,12 +39,10 @@ const crearProducto = async (req, res) => {
 
 const listaProductos = async (req, res) => {
 	try {
-		//Si al metodo find no le asignamos ningun argumento, me retornara el arreglo con todos los elementos del modelo
 		const listaProductos = await productoModel.find();
 
 		res.status(200).json({
 			msg: 'lista de productos enviadas',
-			//le envio al front toda la lista de productos
 			listaProductos,
 		});
 	} catch (error) {
@@ -50,30 +54,28 @@ const listaProductos = async (req, res) => {
 
 const editarProducto = async (req, res) => {
 	try {
+		const { _id, name, precio, descripcion, stock, estado } = req.body;
+
 		//validaciones
-		// if (name === '' || precio === '' || descripcion === '') {
-		// 	res.status(400).json({
-		// 		msg: 'Todos los campos son obligatorios',
-		// 	});
-		// }
+		if (!_id || !name || !precio || !descripcion || !stock || !estado) {
+            return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
+        }
+
+        const productoEditar = await productoModel.findById(_id);
+        if (!productoEditar) {
+            return res.status(400).json({ msg: 'No existe un producto con este ID' });
+        }
+
+		const productoExistente = await productoModel.findOne({ name });
+        if (productoExistente) {
+            return res.status(400).json({ msg: 'El producto ya existe' });
+        }	
 		//fin de las validaciones
 
-		//buscamos que el producto que quiera editar exista
-		const productoEditar = await productoModel.findById(req.body._id);
-
-		//en caso de no existir tiramos un error
-		if (!productoEditar) {
-			return res.status(400).json({
-				msg: 'No existe un producto con este ID',
-			});
-		}
-
-		//si el producto que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
-		await productoModel.findByIdAndUpdate(req.body._id, req.body);
-
-		res.status(200).json({
-			msg: 'Producto editado exitosamente',
-		});
+		const productoActualizado = await productoModel.findByIdAndUpdate(_id, req.body, { new: true });
+        res.status(200).json({ 
+			msg: 'Producto editado exitosamente', productoActualizado 
+		});		
 	} catch (error) {
 		res.status(500).json({
 			msg: 'Error, por favor contactarse con un administrador',
@@ -114,16 +116,9 @@ const listaUsuarios = async (req, res) => {
 				mensaje: 'No existen usuarios cargados para listar',
 			});
 		}
-		// const payload = {mensaje:"payload",
-		// };
-
-		// const token = jwt.sign(payload, process.env.SECRET_JWT, {
-		// 	expiresIn: '3h',
-		// });
 
 		res.status(200).json({
 			msg: 'Lista de usuarios enviadas',
-			//le envio al front toda la lista de usuarios
 			listaUsuarios,
 		});
 	} catch (error) {
@@ -136,14 +131,13 @@ const listaUsuarios = async (req, res) => {
 
 const editarUsuario = async (req, res) => {
 	try {
-		// const { name, edad, email, password, estado } = req.body;
+		const { name, edad, email, password, estado } = req.body;
 		// validaciones
-		// if (name === '' || edad === '' || email === ''|| password === '') {
-		// 	res.status(400).json({
-		// 		msg: 'Todos los campos son obligatorios',
-		// 	});
-		// }
-		// fin de las validaciones
+		if (name === '' || edad === '' || email === ''|| password === '') {
+			res.status(400).json({
+				msg: 'Todos los campos son obligatorios',
+			});
+		}
 
 		//buscamos que el usuario que quiera editar exista
 		const usuarioEditar = await usuarioModel.findById(req.body._id);
@@ -155,9 +149,14 @@ const editarUsuario = async (req, res) => {
 			});
 		}
 
+		const usuarioExistente = await usuarioModel.findOne({ name });
+        if (usuarioExistente) {
+            return res.status(400).json({ msg: 'Ya existe un usuario con la misma descripción' });
+        }		
+		// fin de las validaciones
+
 		//si el usuario que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
 		await usuarioModel.findByIdAndUpdate(req.body._id, req.body);
-
 		res.status(200).json({
 			msg: 'Usuario editado exitosamente',
 		});
