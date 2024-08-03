@@ -31,6 +31,11 @@ const CanchaSchema = Schema({
 		type: Number,
 		required: true,
 	},
+
+	precio: {
+		type: Number,
+		required: true,
+	},	
 });
 
 module.exports = model('Canchas', CanchaSchema);

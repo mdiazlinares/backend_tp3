@@ -194,10 +194,10 @@ const eliminarUsuario = async (req, res) => {
 
 const crearCancha = async (req, res) => {
 	try {
-		const { name, descripcion, estado, imagen, cesped, tamanio } = req.body;
+		const { name, descripcion, estado, imagen, cesped, tamanio, precio } = req.body;
 
 		// validaciones
-		if (name === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '') {
+		if (name === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '' || precio === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
