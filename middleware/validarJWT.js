@@ -13,6 +13,7 @@ const validarJWT = (req, res, next) => {
 		}
 
 		const verificarToken = jwt.verify(token, process.env.SECRET_JWT);
+		
 	} catch (error) {
 		//si el token es invalido cae aca, en caso de que se vencio
 		return res.status(401).json({
