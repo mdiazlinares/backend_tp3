@@ -220,6 +220,13 @@ const registrarCompra = async (req, res) => {
     try {
         const { usuario, productos } = req.body;
 
+		//Validaciones
+		if (usuario === '' || productos === '' ) {
+			res.status(400).json({
+				msg: 'Todos los campos son obligatorios',
+			});
+		}
+
         // Calcular el total y verificar stock
         let total = 0;
         for (const item of productos) {
@@ -246,4 +253,50 @@ const registrarCompra = async (req, res) => {
     }
 };
 
-module.exports = { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva, registrarCompra };
+const listarComprasPorUsuario = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+
+		//Validaciones
+		if (idUsuario === '') {
+			res.status(400).json({
+				msg: 'El idUsuario es obligatorio',
+			});
+		}
+
+		// //buscamos que el usuario exista
+		// const usuario = await usuarioModel.findById(String(idUsuario));
+		// //en caso de no existir tiramos un error
+		// if (!usuario) {
+		// 	return res.status(400).json({
+		// 		msg: 'No existe un usuario con este ID',
+		// 	});
+		// }		
+
+
+        // Buscar las compras del usuario, recuperando también los nombres del producto y del usuario
+        const compras = await comprasModel.find({ usuario: idUsuario })
+            .populate('usuario', 'name')
+            .populate('productos.producto', 'name');
+
+        // Si no se encuentran compras
+        if (compras.length === 0) {
+            return res.status(404).json({
+                msg: 'No se encontraron compras para este usuario',
+            });
+        }
+
+        // Responder con la lista de compras
+        res.status(200).json({
+            msg: 'Compras del usuario',
+            compras,
+        });
+    } catch (error) {
+        console.error('Error al listar las compras:', error);
+        res.status(500).json({
+            msg: 'Error al listar las compras, por favor contactarse con un administrador',
+        });
+    }
+};
+
+module.exports = { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva, registrarCompra, listarComprasPorUsuario };
