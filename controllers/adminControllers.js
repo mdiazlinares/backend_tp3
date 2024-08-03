@@ -4,7 +4,7 @@ const canchaModel = require('../model/cancha-model');
 
 const crearProducto = async (req, res) => {
 	try {
-		const { name, precio, descripcion } = req.body;
+		const { name, precio, descripcion, imagen } = req.body;
 
 		//validaciones
 		if (name === '' || precio === '' || descripcion === '') {
@@ -18,9 +18,6 @@ const crearProducto = async (req, res) => {
             return res.status(400).json({ msg: 'El producto ya existe' });
         }		
 		//fin de las validaciones
-
-		//opcional verificar si el producto existe o no y ver como lo encaran
-
 
 		const producto = new productoModel(req.body);
 
@@ -197,15 +194,15 @@ const eliminarUsuario = async (req, res) => {
 
 const crearCancha = async (req, res) => {
 	try {
-		// const { name, descripcion, estado } = req.body;
+		const { name, descripcion, estado, imagen, cesped, tamanio } = req.body;
 
-		//validaciones
-		// if (name === '' || descripcion === '' || estado === '') {
-		// 	res.status(400).json({
-		// 		msg: 'Todos los campos son obligatorios',
-		// 	});
-		// }
-		//fin de las validaciones
+		// validaciones
+		if (name === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '') {
+			res.status(400).json({
+				msg: 'Todos los campos son obligatorios',
+			});
+		}
+		// fin de las validaciones
 
 		//opcional verificar si la cancha existe o no y ver como lo encaran
 		const cancha = new canchaModel(req.body);
@@ -217,6 +214,7 @@ const crearCancha = async (req, res) => {
 			msg: 'Cancha creada',
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			msg: 'Error, por favor contactarse con un administrador',
 		});
@@ -225,10 +223,6 @@ const crearCancha = async (req, res) => {
 
 const listaCanchas = async (req, res) => {
 	try {
-		// const token = jwt.sign(payload, process.env.SECRET_JWT, {expiresIn: '1h',});
-		// console.log(token);
-
-		//Si al metodo find no le asignamos ningun argumento, me retornara el arreglo con todos los elementos del modelo
 		const listaCanchas = await canchaModel.find();
 
 		res.status(200).json({

@@ -26,7 +26,7 @@ const ProductoSchema = Schema({
 		type: Boolean,
 		required: true,
 		default: true,
-	},		
+	},	
 });
 
 module.exports = model('Productos', ProductoSchema);

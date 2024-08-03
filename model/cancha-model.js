@@ -16,6 +16,21 @@ const CanchaSchema = Schema({
 		required: true,
 		default: true,
 	},	
+
+	imagen: {
+		type: String,
+		required: true,
+	},
+
+	cesped: {
+		type: String,
+		required: true,
+	},	
+
+	tamanio: {
+		type: Number,
+		required: true,
+	},
 });
 
 module.exports = model('Canchas', CanchaSchema);
