@@ -1,7 +1,12 @@
 const usuarioModel = require('../model/usuario-model');
 const reservaModel = require('../model/reservas-model');
+
+const comprasModel = require('../model/compras-model');
+const productoModel = require('../model/producto-model');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 
 const crearUsuario = async (req, res) => {
 	try {
@@ -37,6 +42,7 @@ const crearUsuario = async (req, res) => {
 			msg: 'Usuario creado',
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			msg: 'Por favor contactarse con un administrador',
 		});
@@ -80,7 +86,7 @@ const loginUsuario = async (req, res) => {
 
 		res.status(200).json({
 			msg: 'Usuario logueado',
-			token,
+			token,			
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -210,4 +216,34 @@ const editarReserva = async (req, res) => {
 	}
 };
 
-module.exports = { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva };
+const registrarCompra = async (req, res) => {
+    try {
+        const { usuario, productos } = req.body;
+
+        // Calcular el total y verificar stock
+        let total = 0;
+        for (const item of productos) {
+            const producto = await productoModel.findById(item.producto);
+            if (!producto || producto.stock < item.cantidad) {
+                return res.status(400).json({ message: `Stock insuficiente para el producto: ${producto ? producto.name : 'desconocido'}` });
+            }
+            total += producto.precio * item.cantidad;
+        }
+
+        // Registrar la compra
+        const nuevaCompra = new comprasModel({ usuario, productos, total });
+        await nuevaCompra.save();
+
+        // Actualizar el stock de los productos
+        for (const item of productos) {
+            await productoModel.findByIdAndUpdate(item.producto, { $inc: { stock: -item.cantidad } });
+        }
+
+        res.status(201).json({ message: 'Compra registrada exitosamente', compra: nuevaCompra });
+    } catch (error) {
+        console.error('Error al registrar la compra:', error);
+        res.status(500).json({ message: 'Error al registrar la compra, por favor contactarse con un administrador' });
+    }
+};
+
+module.exports = { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva, registrarCompra };
