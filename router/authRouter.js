@@ -1,5 +1,5 @@
 const express = require('express');
-const { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva, registrarCompra } = require('../controllers/authControllers');
+const { crearUsuario, loginUsuario, crearReserva, listaReservas, eliminarReserva, editarReserva, registrarCompra, listarComprasPorUsuario } = require('../controllers/authControllers');
 const { validarJWT } = require('../middleware/validarJWT');
 const routerAuth = express.Router();
 
@@ -15,7 +15,10 @@ routerAuth.delete('/eliminarReserva/:id', validarJWT, eliminarReserva);
 
 routerAuth.put('/editarReserva/', validarJWT, editarReserva);
 
-routerAuth.post('/registrarCompra', registrarCompra); // validarJWT, 
+routerAuth.post('/registrarCompra', validarJWT, registrarCompra); 
+
+routerAuth.get('/compras/:idUsuario', validarJWT, listarComprasPorUsuario);
+
 
 module.exports = routerAuth;
 
