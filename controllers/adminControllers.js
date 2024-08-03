@@ -270,7 +270,7 @@ const editarCancha = async (req, res) => {
 	}
 };
 
-
+//
 const eliminarCancha = async (req, res) => {
 	try {
 		//recibimos por PARAMETRO el id de la cancha que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
