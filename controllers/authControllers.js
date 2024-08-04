@@ -51,7 +51,7 @@ const crearUsuario = async (req, res) => {
 
 const loginUsuario = async (req, res) => {
 	try {
-		const { email, password } = req.body;
+		const { email, password} = req.body;
 
 		//validaciones
 		if (email === '' || password === '') {
@@ -80,6 +80,7 @@ const loginUsuario = async (req, res) => {
 		const payload = {
 			name: usuario.name,
 			rol: usuario.rol,
+			id_usuario: usuario.id
 		};
 
 		const token = jwt.sign(payload, process.env.SECRET_JWT, {expiresIn: '24h',});
