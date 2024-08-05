@@ -7,7 +7,7 @@ const crearProducto = async (req, res) => {
 		const { name, precio, descripcion, imagen } = req.body;
 
 		//validaciones
-		if (name === '' || precio === '' || descripcion === '') {
+		if (name === '' || precio === '' || descripcion === '' || imagen === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
@@ -51,7 +51,7 @@ const listaProductos = async (req, res) => {
 
 const editarProducto = async (req, res) => {
 	try {
-		const { _id, name, precio, descripcion, stock, estado } = req.body;
+		const { _id, name, precio, descripcion, stock, estado, imagen } = req.body;
 
 		//validaciones
 		if (!_id || !name || !precio || !descripcion || !stock || !estado) {
