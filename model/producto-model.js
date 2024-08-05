@@ -27,6 +27,11 @@ const ProductoSchema = Schema({
 		required: true,
 		default: true,
 	},	
+
+	imagen: {
+		type: String
+	},
+
 });
 
 module.exports = model('Productos', ProductoSchema);
