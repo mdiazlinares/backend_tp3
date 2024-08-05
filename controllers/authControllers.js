@@ -76,7 +76,7 @@ const loginUsuario = async (req, res) => {
 			});
 		}
 
-		//creamos un objeto el cual definimos los datos que queremos guardar en el token, Recordar no guardar informacion sensible
+		//creamos un objeto el cual definimos los datos que queremos guardar en el token
 		const payload = {
 			name: usuario.name,
 			rol: usuario.rol,
@@ -179,7 +179,6 @@ const eliminarReserva = async (req, res) => {
 			});
 		}
 
-		//en caso que la reserva que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
 		await reservaModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
@@ -204,7 +203,6 @@ const editarReserva = async (req, res) => {
 			});
 		}
 
-		//si la reserva que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
 		await reservaModel.findByIdAndUpdate(req.body._id, req.body);
 
 		res.status(200).json({
@@ -264,16 +262,6 @@ const listarComprasPorUsuario = async (req, res) => {
 				msg: 'El idUsuario es obligatorio',
 			});
 		}
-
-		// //buscamos que el usuario exista
-		// const usuario = await usuarioModel.findById(String(idUsuario));
-		// //en caso de no existir tiramos un error
-		// if (!usuario) {
-		// 	return res.status(400).json({
-		// 		msg: 'No existe un usuario con este ID',
-		// 	});
-		// }		
-
 
         // Buscar las compras del usuario, recuperando también los nombres del producto y del usuario
         const compras = await comprasModel.find({ usuario: idUsuario })

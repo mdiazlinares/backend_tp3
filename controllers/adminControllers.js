@@ -85,14 +85,12 @@ const eliminarProducto = async (req, res) => {
 		//recibimos por PARAMETRO el id del producto que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const productoEliminar = await productoModel.findById(req.params.id);
 
-		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
 		if (!productoEliminar) {
 			return res.status(400).json({
 				msg: 'No existe ningun producto con este ID',
 			});
 		}
 
-		//en caso que el producto que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
 		await productoModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
@@ -177,7 +175,6 @@ const eliminarUsuario = async (req, res) => {
 			});
 		}
 
-		//en caso que el usuario que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
 		await usuarioModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
@@ -190,8 +187,6 @@ const eliminarUsuario = async (req, res) => {
 	}
 };
 	
-///////////////////////////
-
 const crearCancha = async (req, res) => {
 	try {
 		const { name, descripcion, estado, imagen, cesped, tamanio, precio } = req.body;
@@ -204,7 +199,6 @@ const crearCancha = async (req, res) => {
 		}
 		// fin de las validaciones
 
-		//opcional verificar si la cancha existe o no y ver como lo encaran
 		const cancha = new canchaModel(req.body);
 
 		//guardarlo en la base de datos
@@ -239,14 +233,6 @@ const listaCanchas = async (req, res) => {
 
 const editarCancha = async (req, res) => {
 	try {
-		//validaciones
-		// if (name === '' || descripcion === '' || estado === '') {
-		// 	res.status(400).json({
-		// 		msg: 'Todos los campos son obligatorios',
-		// 	});
-		// }
-		//fin de las validaciones
-
 		//buscamos que la cancha que quiera editar exista
 		const canchaEditar = await canchaModel.findById(req.body._id);
 
@@ -257,7 +243,6 @@ const editarCancha = async (req, res) => {
 			});
 		}
 
-		//si la cancha que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
 		await canchaModel.findByIdAndUpdate(req.body._id, req.body);
 
 		res.status(200).json({
@@ -283,7 +268,6 @@ const eliminarCancha = async (req, res) => {
 			});
 		}
 
-		//en caso que la cancha que quiera eliminar se encuentre buscamos por y el que coincida lo eliminar de la DB
 		await canchaModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
