@@ -176,6 +176,13 @@ const eliminarUsuario = async (req, res) => {
 			});
 		}
 
+        // Validación para evitar eliminar al usuario administrador
+        if (usuarioEliminar.rol === 'Administrador') {
+            return res.status(403).json({
+                msg: 'No está permitido eliminar al usuario administrador',
+            });
+        }
+
 		await usuarioModel.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({
