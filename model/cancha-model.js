@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const CanchaSchema = Schema({
-	name: {
+	nombre_cancha: {
 		type: String,
 		required: true,
 	},
@@ -39,4 +39,3 @@ const CanchaSchema = Schema({
 });
 
 module.exports = model('Canchas', CanchaSchema);
-//

@@ -1,6 +1,6 @@
+const canchaModel = require('../model/cancha-model');
 const usuarioModel = require('../model/usuario-model');
 const reservaModel = require('../model/reservas-model');
-
 const comprasModel = require('../model/compras-model');
 const productoModel = require('../model/producto-model');
 
@@ -11,10 +11,10 @@ const jwt = require('jsonwebtoken');
 const crearUsuario = async (req, res) => {
 	try {
 		//atravez de req.body recibimos en un objeto lo que nos envio el "FRONT"
-		const { name, edad, email, password } = req.body;
+		const { nombre_usuario, edad, email, password } = req.body;
 
 		//validaciones
-		if (name === '' || edad === '' || email === '' || password === '') {
+		if (nombre_usuario === '' || edad === '' || email === '' || password === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
@@ -78,7 +78,7 @@ const loginUsuario = async (req, res) => {
 
 		//creamos un objeto el cual definimos los datos que queremos guardar en el token
 		const payload = {
-			name: usuario.name,
+			nombre_usuario: usuario.nombre_usuario,
 			rol: usuario.rol,
 			id_usuario: usuario.id
 		};
@@ -147,25 +147,41 @@ const crearReserva = async (req, res) => {
 
 const listaReservas = async (req, res) => {
 	try {
-		//Si al metodo find no le asignamos ningun argumento, me retornara el arreglo con todos los elementos del modelo
-		const listaReservas = await reservaModel.find();
-		if (!listaReservas) {
+		// Obtenemos la lista de reservas y poblamos los campos relacionados
+		let listaReservas = await reservaModel.find()
+			.populate('id_cancha', 'nombre_cancha')
+			.populate('id_usuario', 'nombre_usuario');
+
+		// Si no hay reservas
+		if (!listaReservas || listaReservas.length === 0) {
 			return res.status(400).json({
 				mensaje: 'No existen reservas cargadas para listar',
 			});
 		}
 
+		// Convertimos el formato de la fecha para cada reserva
+		listaReservas = listaReservas.map(reserva => {
+			return {
+				...reserva._doc,
+				fecha: new Date(reserva.fecha).toLocaleDateString('es-ES'), // Cambia el formato a dd/mm/yyyy
+				nombre_cancha: reserva.id_cancha.nombre_cancha,
+				nombre_usuario: reserva.id_usuario.nombre_usuario,
+			};
+		});
+
 		res.status(200).json({
 			msg: 'Lista de reservas generadas',
-			//le envio al front toda la lista de productos
-			listaReservas,
+			listaReservas, // Enviamos la lista de reservas con las fechas formateadas y nombres poblados
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			msg: 'Error, por favor contactarse con un administrador',
 		});
 	}
 };
+
+
 
 const eliminarReserva = async (req, res) => {
 	try {
@@ -265,8 +281,8 @@ const listarComprasPorUsuario = async (req, res) => {
 
         // Buscar las compras del usuario, recuperando también los nombres del producto y del usuario
         const compras = await comprasModel.find({ usuario: idUsuario })
-            .populate('usuario', 'name')
-            .populate('productos.producto', 'name');
+            .populate('usuario', 'nombre')
+            .populate('productos.producto', 'nombre');
 
         // Si no se encuentran compras
         if (compras.length === 0) {
