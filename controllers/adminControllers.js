@@ -4,16 +4,16 @@ const canchaModel = require('../model/cancha-model');
 
 const crearProducto = async (req, res) => {
 	try {
-		const { name, precio, descripcion, imagen } = req.body;
+		const { nombre_producto, precio, descripcion, imagen } = req.body;
 
 		//validaciones
-		if (name === '' || precio === '' || descripcion === '' || imagen === '') {
+		if (nombre_producto === '' || precio === '' || descripcion === '' || imagen === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
 
-		const productoExistente = await productoModel.findOne({ name });
+		const productoExistente = await productoModel.findOne({ nombre_producto });
         if (productoExistente) {
             return res.status(400).json({ msg: 'El producto ya existe' });
         }		
@@ -28,6 +28,7 @@ const crearProducto = async (req, res) => {
 			msg: 'Producto creado',
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({
 			msg: 'Error, por favor contactarse con un administrador',
 		});
@@ -51,10 +52,10 @@ const listaProductos = async (req, res) => {
 
 const editarProducto = async (req, res) => {
 	try {
-		const { _id, name, precio, descripcion, stock, estado, imagen } = req.body;
+		const { _id, nombre_producto, precio, descripcion, stock, estado, imagen } = req.body;
 
 		//validaciones
-		if (!_id || !name || !precio || !descripcion || !stock || !estado) {
+		if (!_id || !nombre_producto || !precio || !descripcion || !stock || !estado) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
 
@@ -63,7 +64,7 @@ const editarProducto = async (req, res) => {
             return res.status(400).json({ msg: 'No existe un producto con este ID' });
         }
 
-		const productoExistente = await productoModel.findOne({ name });
+		const productoExistente = await productoModel.findOne({ nombre_producto });
         if (productoExistente) {
             return res.status(400).json({ msg: 'El producto ya existe' });
         }	
@@ -126,9 +127,9 @@ const listaUsuarios = async (req, res) => {
 
 const editarUsuario = async (req, res) => {
 	try {
-		const { name, edad, email, password, estado } = req.body;
+		const { nombre_usuario, edad, email, password, estado } = req.body;
 		// validaciones
-		if (name === '' || edad === '' || email === ''|| password === '') {
+		if (nombre_usuario === '' || edad === '' || email === ''|| password === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
@@ -144,7 +145,7 @@ const editarUsuario = async (req, res) => {
 			});
 		}
 
-		const usuarioExistente = await usuarioModel.findOne({ name });
+		const usuarioExistente = await usuarioModel.findOne({ nombre_usuario });
         if (usuarioExistente) {
             return res.status(400).json({ msg: 'Ya existe un usuario con la misma descripción' });
         }		
@@ -189,10 +190,10 @@ const eliminarUsuario = async (req, res) => {
 	
 const crearCancha = async (req, res) => {
 	try {
-		const { name, descripcion, estado, imagen, cesped, tamanio, precio } = req.body;
+		const { nombre_cancha, descripcion, estado, imagen, cesped, tamanio, precio } = req.body;
 
 		// validaciones
-		if (name === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '' || precio === '') {
+		if (nombre_cancha === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '' || precio === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
