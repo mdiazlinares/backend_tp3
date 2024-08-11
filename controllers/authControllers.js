@@ -281,8 +281,8 @@ const listarComprasPorUsuario = async (req, res) => {
 
         // Buscar las compras del usuario, recuperando también los nombres del producto y del usuario
         const compras = await comprasModel.find({ usuario: idUsuario })
-            .populate('usuario', 'nombre')
-            .populate('productos.producto', 'nombre');
+            .populate('usuario', 'nombre_usuario')
+            .populate('productos.producto', 'nombre_producto');
 
         // Si no se encuentran compras
         if (compras.length === 0) {
