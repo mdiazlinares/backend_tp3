@@ -10,17 +10,14 @@ const jwt = require('jsonwebtoken');
 
 const crearUsuario = async (req, res) => {
 	try {
-		//atravez de req.body recibimos en un objeto lo que nos envio el "FRONT"
 		const { nombre_usuario, edad, email, password } = req.body;
 
-		//validaciones
 		if (nombre_usuario === '' || edad === '' || email === '' || password === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
 
-		//analizamos si el correo ingresado no esta registrado
 		let usuario = await usuarioModel.findOne({ email });
 		if (usuario) {
 			return res.status(400).json({
@@ -28,14 +25,11 @@ const crearUsuario = async (req, res) => {
 			});
 		}
 
-		//en el caso que no exista el correo en la base de datos, creamos una instancia
 		usuario = new usuarioModel(req.body);
 
-		//encriptamos password
 		const salt = bcrypt.genSaltSync(10);
 		usuario.password = bcrypt.hashSync(password, salt);
 
-		//guardarlo en la base de datos
 		await usuario.save();
 
 		res.status(201).json({
@@ -53,14 +47,12 @@ const loginUsuario = async (req, res) => {
 	try {
 		const { email, password} = req.body;
 
-		//validaciones
 		if (email === '' || password === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
 
-		//Analizamos si el correo ingresado no esta registrado
 		let usuario = await usuarioModel.findOne({ email });
 		if (!usuario) {
 			return res.status(400).json({
@@ -68,7 +60,6 @@ const loginUsuario = async (req, res) => {
 			});
 		}
 
-		//validar password, vamos a comparar la contraseña del correo que encontre con la que ingreso el USUARIO
 		const validarPassword = bcrypt.compareSync(password, usuario.password);
 		if (!validarPassword) {
 			res.status(400).json({
@@ -76,7 +67,6 @@ const loginUsuario = async (req, res) => {
 			});
 		}
 
-		//creamos un objeto el cual definimos los datos que queremos guardar en el token
 		const payload = {
 			nombre_usuario: usuario.nombre_usuario,
 			rol: usuario.rol,
@@ -100,18 +90,15 @@ const crearReserva = async (req, res) => {
     try {
         const { id_cancha, id_usuario, fecha, horaInicio, horaFin } = req.body;
 
-		//validaciones
 		if (id_cancha === '' || id_usuario === '' || fecha === '' || horaInicio === '' || horaFin === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
-		//Analizamos que las horas ingresadas sean correctas
-        if (horaInicio < 1 || horaInicio >= 24) {
+		if (horaInicio < 1 || horaInicio >= 24) {
             return res.status(400).json({ message: 'La hora de fin debe ser mayor que 1 y menor o igual que 24.' });
         }
 
-        // Validación de horaFin
         if (horaFin <= 1 || horaFin > 24) {
             return res.status(400).json({ message: 'La hora de fin debe ser mayor que 1 y menor o igual que 24.' });
         }
@@ -120,7 +107,6 @@ const crearReserva = async (req, res) => {
             return res.status(400).json({ message: 'La hora de inicio debe ser menor que la hora de fin.' });
         }
 
-        // Verificar disponibilidad
         const reservasExistentes = await reservaModel.find({
             id_cancha,
             fecha,
@@ -147,19 +133,16 @@ const crearReserva = async (req, res) => {
 
 const listaReservas = async (req, res) => {
 	try {
-		// Obtenemos la lista de reservas y poblamos los campos relacionados
 		let listaReservas = await reservaModel.find()
 			.populate('id_cancha', 'nombre_cancha')
 			.populate('id_usuario', 'nombre_usuario');
 
-		// Si no hay reservas
 		if (!listaReservas || listaReservas.length === 0) {
 			return res.status(400).json({
 				mensaje: 'No existen reservas cargadas para listar',
 			});
 		}
 
-		// Convertimos el formato de la fecha para cada reserva
 		listaReservas = listaReservas.map(reserva => {
 			return {
 				...reserva._doc,
@@ -185,10 +168,8 @@ const listaReservas = async (req, res) => {
 
 const eliminarReserva = async (req, res) => {
 	try {
-		//recibimos por PARAMETRO el id de la reserva que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const reservaEliminar = await reservaModel.findById(req.params.id);
 
-		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
 		if (!reservaEliminar) {
 			return res.status(400).json({
 				msg: 'No existe ninguna reserva con este ID',
@@ -209,10 +190,8 @@ const eliminarReserva = async (req, res) => {
 
 const editarReserva = async (req, res) => {
 	try {
-		//buscamos que el usuario que quiera editar exista
 		const reservaEditar = await reservaModel.findById(req.body._id);
 
-		//en caso de no existir tiramos un error
 		if (!reservaEditar) {
 			return res.status(400).json({
 				msg: 'No existe una reserva con este ID',
@@ -235,14 +214,12 @@ const registrarCompra = async (req, res) => {
     try {
         const { usuario, productos } = req.body;
 
-		//Validaciones
 		if (usuario === '' || productos === '' ) {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
 
-        // Calcular el total y verificar stock
         let total = 0;
         for (const item of productos) {
             const producto = await productoModel.findById(item.producto);
@@ -252,11 +229,9 @@ const registrarCompra = async (req, res) => {
             total += producto.precio * item.cantidad;
         }
 
-        // Registrar la compra
         const nuevaCompra = new comprasModel({ usuario, productos, total });
         await nuevaCompra.save();
 
-        // Actualizar el stock de los productos
         for (const item of productos) {
             await productoModel.findByIdAndUpdate(item.producto, { $inc: { stock: -item.cantidad } });
         }
@@ -272,26 +247,22 @@ const listarComprasPorUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
 
-		//Validaciones
 		if (idUsuario === '') {
 			res.status(400).json({
 				msg: 'El idUsuario es obligatorio',
 			});
 		}
 
-        // Buscar las compras del usuario, recuperando también los nombres del producto y del usuario
         const compras = await comprasModel.find({ usuario: idUsuario })
             .populate('usuario', 'nombre_usuario')
             .populate('productos.producto', 'nombre_producto');
 
-        // Si no se encuentran compras
         if (compras.length === 0) {
             return res.status(404).json({
                 msg: 'No se encontraron compras para este usuario',
             });
         }
 
-        // Responder con la lista de compras
         res.status(200).json({
             msg: 'Compras del usuario',
             compras,
