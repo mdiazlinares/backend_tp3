@@ -6,7 +6,6 @@ const crearProducto = async (req, res) => {
 	try {
 		const { nombre_producto, precio, descripcion, imagen } = req.body;
 
-		//validaciones
 		if (nombre_producto === '' || precio === '' || descripcion === '' || imagen === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
@@ -17,11 +16,9 @@ const crearProducto = async (req, res) => {
         if (productoExistente) {
             return res.status(400).json({ msg: 'El producto ya existe' });
         }		
-		//fin de las validaciones
-
+		
 		const producto = new productoModel(req.body);
 
-		//guardarlo en la base de datos
 		await producto.save();
 
 		res.status(201).json({
@@ -54,7 +51,6 @@ const editarProducto = async (req, res) => {
 	try {
 		const { _id, nombre_producto, precio, descripcion, stock, estado, imagen } = req.body;
 
-		//validaciones
 		if (!_id || !nombre_producto || !precio || !descripcion || !stock || !estado) {
             return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
         }
@@ -68,8 +64,7 @@ const editarProducto = async (req, res) => {
         if (productoExistente) {
             return res.status(400).json({ msg: 'El producto ya existe' });
         }	
-		//fin de las validaciones
-
+		
 		const productoActualizado = await productoModel.findByIdAndUpdate(_id, req.body, { new: true });
         res.status(200).json({ 
 			msg: 'Producto editado exitosamente', productoActualizado 
@@ -83,7 +78,6 @@ const editarProducto = async (req, res) => {
 
 const eliminarProducto = async (req, res) => {
 	try {
-		//recibimos por PARAMETRO el id del producto que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const productoEliminar = await productoModel.findById(req.params.id);
 
 		if (!productoEliminar) {
@@ -128,17 +122,14 @@ const listaUsuarios = async (req, res) => {
 const editarUsuario = async (req, res) => {
 	try {
 		const { nombre_usuario, edad, email, password, estado } = req.body;
-		// validaciones
 		if (nombre_usuario === '' || edad === '' || email === ''|| password === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
 
-		//buscamos que el usuario que quiera editar exista
 		const usuarioEditar = await usuarioModel.findById(req.body._id);
 
-		//en caso de no existir tiramos un error
 		if (!usuarioEditar) {
 			return res.status(400).json({
 				msg: 'No existe un usuario con este ID',
@@ -149,9 +140,7 @@ const editarUsuario = async (req, res) => {
         if (usuarioExistente) {
             return res.status(400).json({ msg: 'Ya existe un usuario con la misma descripción' });
         }		
-		// fin de las validaciones
-
-		//si el usuario que quiere editar se encuentra buscamos por el id en toda la lista y remplazamos el valor encontrado por el valor que envio el usuario
+		
 		await usuarioModel.findByIdAndUpdate(req.body._id, req.body);
 		res.status(200).json({
 			msg: 'Usuario editado exitosamente',
@@ -166,17 +155,14 @@ const editarUsuario = async (req, res) => {
 
 const eliminarUsuario = async (req, res) => {
 	try {
-		//recibimos por PARAMETRO el id del usuario que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const usuarioEliminar = await usuarioModel.findById(req.params.id);
 
-		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
 		if (!usuarioEliminar) {
 			return res.status(400).json({
 				msg: 'No existe ningun usuario con este ID',
 			});
 		}
 
-        // Validación para evitar eliminar al usuario administrador
         if (usuarioEliminar.rol === 'Administrador') {
             return res.status(403).json({
                 msg: 'No está permitido eliminar al usuario administrador',
@@ -199,17 +185,14 @@ const crearCancha = async (req, res) => {
 	try {
 		const { nombre_cancha, descripcion, estado, imagen, cesped, tamanio, precio } = req.body;
 
-		// validaciones
 		if (nombre_cancha === '' || descripcion === '' || estado === '' || imagen === '' || cesped === '' || tamanio === '' || precio === '') {
 			res.status(400).json({
 				msg: 'Todos los campos son obligatorios',
 			});
 		}
-		// fin de las validaciones
-
+		
 		const cancha = new canchaModel(req.body);
 
-		//guardarlo en la base de datos
 		await cancha.save();
 
 		res.status(201).json({
@@ -229,7 +212,6 @@ const listaCanchas = async (req, res) => {
 
 		res.status(200).json({
 			msg: 'Lista de canchas enviadas',
-			//le envio al front toda la lista de productos
 			listaCanchas,
 		});
 	} catch (error) {
@@ -241,10 +223,8 @@ const listaCanchas = async (req, res) => {
 
 const editarCancha = async (req, res) => {
 	try {
-		//buscamos que la cancha que quiera editar exista
 		const canchaEditar = await canchaModel.findById(req.body._id);
 
-		//en caso de no existir tiramos un error
 		if (!canchaEditar) {
 			return res.status(400).json({
 				msg: 'No existe una cancha con este ID',
@@ -266,10 +246,8 @@ const editarCancha = async (req, res) => {
 //
 const eliminarCancha = async (req, res) => {
 	try {
-		//recibimos por PARAMETRO el id de la cancha que queremos eliminar y lo comparamos con todos los id de la base de datos del modelo producto
 		const canchaEliminar = await canchaModel.findById(req.params.id);
 
-		//en caso de que el que queramos eliminar no se encuetre prevenimos el error comunicandoselo
 		if (!canchaEliminar) {
 			return res.status(400).json({
 				msg: 'No existe ninguna cancha con este ID',

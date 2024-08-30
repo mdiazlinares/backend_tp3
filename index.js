@@ -5,10 +5,8 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 
-//lecutra y parseo del body
 app.use(express.json());
 
-//cors
 app.use(cors());
 
 app.use('/auth', require('./router/authRouter'));
